@@ -5,10 +5,22 @@ pipeline {
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
     stages {
+        stage('GIT') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/tnnebras/3ACC_Nouioui.git'
+            }
+        }
         stage('MAVEN') {
             steps {
-                sh "mvn -version"
                 sh "mvn clean package -DskipTests"
+            }
+        }
+        stage('SONARQUBE') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh "mvn sonar:sonar"
+                }
             }
         }
     }
